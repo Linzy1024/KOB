@@ -49,10 +49,15 @@ public class AddServiceImpl implements AddService {
             return map;
         }
 
+        if (content == null || content.length() == 0) {
+            map.put("error_message", "代码不能为空");
+            return map;
+        }
+
         Date now = new Date();
         Bot bot = new Bot(null, user.getId(), title, description, content, 1500, now, now);
         botMapper.insert(bot);
-        map.put("error_message", "Bot Add Successfully");
+        map.put("error_message", "success");
         return map;
     }
 }
