@@ -71,8 +71,8 @@
             </ul>
           </li>
         </ul>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-else>
-          <li class="nav-item dropdown">
+        <ul class="navbar-nav" v-else-if="!$store.state.user.pulling_info">
+          <li class="nav-item">
             <router-link
               class="nav-link"
               :to="{name: 'user_account_login'}"
@@ -81,7 +81,7 @@
               登录
             </router-link>
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item">
             <router-link
               class="nav-link"
               :to="{name: 'user_account_register'}"

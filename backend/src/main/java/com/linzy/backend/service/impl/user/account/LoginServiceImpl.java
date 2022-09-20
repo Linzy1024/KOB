@@ -24,10 +24,7 @@ public class LoginServiceImpl implements LoginService {
     public Map<String, String> getToken(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(username, password);
-        System.out.println("hahah");
         Authentication authenticate = authenticationManager.authenticate((authenticationToken));
-
-        System.out.println("hahah");
 
         UserDetailsImpl loginUser = (UserDetailsImpl) authenticate.getPrincipal();
 
