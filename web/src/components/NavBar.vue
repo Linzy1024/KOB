@@ -3,8 +3,7 @@
     <div class="container">
       <!-- <a class="navbar-brand" href="/">King of Bots</a> -->
       <router-link class="navbar-brand" :to="{ name: 'home' }"
-        >King of Bots</router-link
-      >
+        >King of Bots</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -48,7 +47,7 @@
             >
           </li>
         </ul>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="$store.state.user.is_login">
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -58,19 +57,38 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Linzy LIN
+              {{$store.state.user.username}}
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li>
-                <!-- <a class="dropdown-item" href="/user/bot">我的Bot</a> -->
                 <router-link
                   class="dropdown-item"
                   :to="{ name: 'user_bot_index' }"
                   >我的Bot</router-link
                 >
               </li>
-              <li><a class="dropdown-item" href="#">退出</a></li>
+              <li><a class="dropdown-item" href="#" @click="logout">退出</a></li>
             </ul>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-else>
+          <li class="nav-item dropdown">
+            <router-link
+              class="nav-link"
+              :to="{name: 'user_account_login'}"
+              role="button"
+            >
+              登录
+            </router-link>
+          </li>
+          <li class="nav-item dropdown">
+            <router-link
+              class="nav-link"
+              :to="{name: 'user_account_register'}"
+              role="button"
+            >
+              注册
+            </router-link>
           </li>
         </ul>
       </div>
@@ -81,13 +99,20 @@
 <script>
 import { useRoute } from "vue-router";
 import { computed } from "vue";
+import {useStore} from 'vuex'
 
 export default {
   setup() {
+    const store = useStore();
     const route = useRoute();
     let route_name = computed(() => route.name);
+
+    const logout = () => {
+      store.dispatch("logout");
+    }
     return {
       route_name,
+      logout
     };
   },
 };
