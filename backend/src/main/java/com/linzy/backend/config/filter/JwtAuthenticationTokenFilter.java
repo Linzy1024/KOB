@@ -1,4 +1,4 @@
-package com.linzy.backend.ocnfig.filter;
+package com.linzy.backend.config.filter;
 
 
 import com.linzy.backend.mapper.UserMapper;

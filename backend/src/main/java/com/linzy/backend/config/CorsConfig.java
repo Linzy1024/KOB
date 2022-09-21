@@ -1,4 +1,4 @@
-package com.linzy.backend.ocnfig;
+package com.linzy.backend.config;
 
 import org.springframework.context.annotation.Configuration;
 
