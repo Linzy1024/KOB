@@ -22,7 +22,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <form>
+
                       <div class="mb-3">
                         <label for="add-bot-title" class="form-label">名称</label>
                         <input v-model="botadd.title" type="text" class="form-control" id="add-bot-title" placeholder="请输入Bot名称">
@@ -40,7 +40,6 @@
                           theme="textmate"
                           style="height: 300px" />
                       </div>
-                    </form>
                   </div>
                   <div class="modal-footer">
                     <div class="error-message">{{ botadd.error_message }}</div>
@@ -65,8 +64,8 @@
                   <td>{{ bot.title }}</td>
                   <td>{{ bot.createtime }}</td>
                   <td>
-                    <button type="button" class="btn btn-secondary" style="margin-right: 10px" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-'+ bot.id">修改</button>
-                    <button type="button" class="btn btn-danger" @click="update_bot(bot)">删除</button>
+                    <button type="button" class="btn btn-secondary" style="margin-right: 10px" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id">修改</button>
+                    <button type="button" class="btn btn-danger" @click="remove_bot(bot)">删除</button>
                     
                     <div class="modal fade" :id="'update-bot-modal-'+ bot.id" tabindex="-1">
                       <div class="modal-dialog  modal-xl">
@@ -76,7 +75,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            <form>
                               <div class="mb-3">
                                 <label for="add-bot-title" class="form-label">名称</label>
                                 <input v-model="bot.title" type="text" class="form-control" id="add-bot-title" placeholder="请输入Bot名称">
@@ -94,7 +92,6 @@
                                   theme="textmate"
                                   style="height: 300px" />
                               </div>
-                            </form>
                           </div>
                           <div class="modal-footer">
                             <div class="error-message">{{ bot.error_message }}</div>
@@ -197,7 +194,7 @@ export default {
     }
 
     const update_bot = (bot) => {
-      botadd.error_message = "";
+      bot.error_message = "";
       $.ajax({
         url: "http://localhost:8081/user/bot/update",
         type: "post",
@@ -212,11 +209,11 @@ export default {
         },
         success(resp) {
           if (resp.error_message === "success") {
-            Modal.getInstance('#update-bot-modal-'+ bot.id).hide;
+            Modal.getInstance('#update-bot-modal-' + bot.id).hide();
             refresh_bots();
 
           }else {
-            botadd.error_message = resp.error_message;
+            bot.error_message = resp.error_message;
           }
 
         },

@@ -64,7 +64,7 @@ public class UpdateServiceImpl implements UpdateService {
 
         Bot new_bot = new Bot(bot.getId(), user.getId(), title, description, content, bot.getRating(), bot.getCreatetime(), new Date());
         botMapper.updateById(new_bot);
-        map.put("error_message", "Bot Update Successfully!");
+        map.put("error_message", "success");
         return map;
 
 
