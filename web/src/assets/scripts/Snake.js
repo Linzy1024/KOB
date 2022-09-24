@@ -68,9 +68,6 @@ export class Snake extends AcGameObject {
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i - 1]));
         }
 
-        if (!this.gamemap.check_valid(this.next_cell)) { //撞墙
-            this.status = "die";
-        }
     }
 
     update_move() { 
@@ -84,7 +81,7 @@ export class Snake extends AcGameObject {
             this.next_cell = null;
             this.status = "idle"; //走到目标点了
             
-            if (!this.check_tail_increasing()) {
+            if (!this.check_tail_increasing()) { //蛇不变长，弹出第一格
                 this.cells.pop();
             }
         }else {
@@ -143,8 +140,6 @@ export class Snake extends AcGameObject {
 
         ctx.fillStyle = "black";
         for (let i = 0; i < 2 ; i ++ ) {
-            // const eye_x = (this.cells[0].x + this.eye_dx[this.eye_direction][i] * 0.15) * L;
-            // const eye_y = (this.cells[0].y + this.eye_dy[this.eye_direction][i] * 0.15) * L;
             const eye_x = (this.cells[0].x + this.eye_dx[this.eye_direction][i] * 0.15) * L;
             const eye_y = (this.cells[0].y + this.eye_dy[this.eye_direction][i] * 0.15) * L;
 
