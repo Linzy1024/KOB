@@ -5,8 +5,10 @@ package com.linzy.backend.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.linzy.backend.consumer.utils.Game;
 import com.linzy.backend.consumer.utils.JwtAuthentication;
+import com.linzy.backend.mapper.BotMapper;
 import com.linzy.backend.mapper.RecordMapper;
 import com.linzy.backend.mapper.UserMapper;
+import com.linzy.backend.pojo.Bot;
 import com.linzy.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,7 @@ public class WebSocketServer {
     private User user;
     private Session session = null;
 
-    private Game game = null;
+    public Game game = null;
 
     private final static String addPlayerUrl = "http://127.0.0.1:8082/player/add";
     private final static String removePlayerUrl = "http://127.0.0.1:8082/player/remove";
@@ -39,7 +41,8 @@ public class WebSocketServer {
     //获取单例userMapper
     private static UserMapper userMapper;
     public static RecordMapper recordMapper;
-    private static RestTemplate restTemplate;
+    public static RestTemplate restTemplate;
+    private static BotMapper botMapper;
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
@@ -54,6 +57,11 @@ public class WebSocketServer {
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
         WebSocketServer.restTemplate = restTemplate;
+    }
+
+    @Autowired
+    public void setBotMapper(BotMapper botMapper) {
+        WebSocketServer.botMapper = botMapper;
     }
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {
@@ -78,10 +86,18 @@ public class WebSocketServer {
         }
     }
 
-    public static void startGame(Integer aId, Integer bId) {
+    public static void startGame(Integer aId, Integer aBotId,Integer bId, Integer bBotId) {
         User a = userMapper.selectById(aId), b = userMapper.selectById(bId);
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
 
-        Game game = new Game(13, 14, 20, a.getId(), b.getId());
+        Game game = new Game(13,
+                14,
+                20,
+                a.getId(),
+                botA,
+                b.getId(),
+                botB);
         game.createMap();
         game.start();
         if (users.get(a.getId()) != null) {
@@ -126,11 +142,12 @@ public class WebSocketServer {
 
     }
 
-    public void startMatching() {
+    public void startMatching(Integer botId) {
         System.out.println("start-matching");
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+        data.add("bot_id", botId.toString());
         restTemplate.postForObject(addPlayerUrl, data, String.class);
 
 
@@ -145,9 +162,13 @@ public class WebSocketServer {
 
     private void move(int direction) {
         if (game.getPlayerA().getId().equals(user.getId())) {
-            game.setNextStepA(direction);
+            if (game.getPlayerA().getBotId().equals(-1)) { //人工操作
+                game.setNextStepA(direction);
+            }
         }else if (game.getPlayerB().getId().equals(user.getId())) {
-            game.setNextStepB(direction);
+            if (game.getPlayerB().getBotId().equals(-1)) { //人工操作
+                game.setNextStepB(direction);
+            }
         }
     }
 
@@ -157,7 +178,7 @@ public class WebSocketServer {
         JSONObject data = JSONObject.parseObject(message);
         String event = data.getString("event");
         if ("start-matching".equals(event)) {
-            startMatching();
+            startMatching(data.getInteger("bot_id"));
         }else if ("stop-matching".equals(event)){
             stopMatching();
         }else if("move".equals(event)) {

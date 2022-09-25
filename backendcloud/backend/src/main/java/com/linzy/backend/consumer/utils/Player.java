@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Player {
     private Integer id;
+    private Integer botId;
+    private String botCode;
     private Integer sx;
     private Integer sy;
 
@@ -40,5 +42,13 @@ public class Player {
             }
         }
         return res;
+    }
+
+    public String getStepsString() {
+        StringBuilder sb = new StringBuilder();
+        for (int d: steps) {
+            sb.append(d);
+        }
+        return sb.toString();
     }
 }
