@@ -2,6 +2,8 @@
   <PlayGround v-if="$store.state.pk.status === 'playing'"/>
   <MatchGround v-if="$store.state.pk.status === 'matching'" />
   <ResultBoard v-if="$store.state.pk.loser != 'none'" />
+  <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">左下角</div>
+  <div class="user-color" v-if="$store.state.pk.status == 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">右上角</div>
 </template>
 
 <script>
@@ -20,9 +22,10 @@ export default {
   },
   setup() {
     const store = useStore();
-    const socketUrl = `ws://localhost:8081/websocket/${store.state.user.token}`;
+    const socketUrl = `wss://app3497.acapp.acwing.com.cn/websocket/${store.state.user.token}`;
 
     store.commit("updateLoser", "none");
+    store.commit("updateIsRecord", false);
 
     let socket = null;
     onMounted(() => {
@@ -68,6 +71,7 @@ export default {
             snake1.status = "die";
           }
           store.commit("updateLoser", data.loser);
+          store.commit("updateRecordLoser", data.loser);
         }
       }
 
@@ -89,4 +93,10 @@ export default {
 </script>
 
 <style scoped>
+div.user-color {
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  font-weight: 600;
+}
 </style>

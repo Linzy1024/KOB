@@ -9,9 +9,9 @@
         </div>
       </div>
       <div class="col-9">
-        <div class="card" style="margin-top: 20px;">
+        <div class="card" style="margin-top: 20px; text-align: center">
           <div class="card-header">
-            <span style="font-size: 130%">我的Bot</span>
+            <span style="font-size: 130%;">我的Bot</span>
             <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-btn">创建Bot</button>
             
             <div class="modal fade modal-xl" id="add-bot-btn" tabindex="-1">
@@ -95,7 +95,7 @@
                           </div>
                           <div class="modal-footer">
                             <div class="error-message">{{ bot.error_message }}</div>
-                            <button type="button" class="btn btn-primary" @click="update_bot(bot)">保存修改</button>
+                            <button type="button" class="btn btn-primary" @click="update_bot(bot)" data-bs-dismiss="modal">保存修改</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                           </div>
                         </div>
@@ -144,7 +144,7 @@ export default {
 
     const refresh_bots= () => {
       $.ajax({
-        url: "http://localhost:8081/user/bot/getlist",
+        url: "https://app3497.acapp.acwing.com.cn/api/user/bot/getlist",
         type: "get",
         headers: {
           Authorization: "Bearer " + store.state.user.token,
@@ -163,7 +163,7 @@ export default {
     const add_bot = () => {
       botadd.error_message = "";
       $.ajax({
-        url: "http://localhost:8081/user/bot/add",
+        url: "https://app3497.acapp.acwing.com.cn/api/user/bot/add",
         type: "post",
         data: {
           title: botadd.title,
@@ -196,7 +196,7 @@ export default {
     const update_bot = (bot) => {
       bot.error_message = "";
       $.ajax({
-        url: "http://localhost:8081/user/bot/update",
+        url: "https://app3497.acapp.acwing.com.cn/api/user/bot/update",
         type: "post",
         data: {
           bot_id: bot.id,
@@ -225,7 +225,7 @@ export default {
 
     const remove_bot = (bot) => {
       $.ajax({
-        url: "http://localhost:8081/user/bot/remove",
+        url: "https://app3497.acapp.acwing.com.cn/api/user/bot/remove",
         type: "post",
         data: {
           bot_id: bot.id,

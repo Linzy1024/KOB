@@ -1,6 +1,5 @@
 package com.linzy.kob.botrunningsystem.service.impl.utils;
 
-import com.linzy.kob.botrunningsystem.utils.BotInterface;
 import org.joor.Reflect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,7 +7,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Component
 public class Consumer extends Thread{
@@ -37,7 +40,7 @@ public class Consumer extends Thread{
     }
 
     private String addUid(String code, String uid) {
-        int k = code.indexOf(" implements com.linzy.kob.botrunningsystem.utils.BotInterface");
+        int k = code.indexOf(" implements java.util.function.Supplier<Integer>");
         return code.substring(0, k) + uid + code.substring(k);
     }
 
@@ -49,15 +52,21 @@ public class Consumer extends Thread{
                 "com.linzy.kob.botrunningsystem.utils.Bot",
                 bot.getBotCode()
         );
-        System.out.println("compile: " + compile);
-        BotInterface botInterface = Reflect.compile(
+        Supplier<Integer> botInterface = Reflect.compile(
                 "com.linzy.kob.botrunningsystem.utils.Bot",
                 bot.getBotCode()
         ).create().get();
 
+        File file = new File("input.txt");
+        try (PrintWriter pw = new PrintWriter(file)) {
+            pw.println(bot.getInput());
+            pw.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("about to call nextMove");
-        Integer direction = botInterface.nextMove(bot.getInput());
+        Integer direction = botInterface.get();
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", bot.getUserId().toString());
         data.add("direction", direction.toString());

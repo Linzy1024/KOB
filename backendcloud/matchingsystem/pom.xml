@@ -11,6 +11,7 @@
 
     <groupId>com.linzy.kob.matchingsystem</groupId>
     <artifactId>matchingsystem</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
@@ -45,5 +46,25 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--这里写上main方法所在类的路径-->
+                <configuration>
+                    <mainClass>com.linzy.kob.matchingsystem.MatchingSystemApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
