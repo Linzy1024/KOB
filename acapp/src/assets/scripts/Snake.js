@@ -15,11 +15,11 @@ export class Snake extends AcGameObject {
         this.speed = 5; //蛇每秒走5个格子
         this.direction = -1; //-1表示没有指令，0，1，2，3表示上右下左
         this.status = "idle"; //"idle"表示静止，"move"表示正在移动，"die"表示死亡
-
-
+        
+        
         this.dr = [-1, 0, 1, 0];
         this.dc = [0, 1, 0, -1];
-
+        
         this.step = 0; //表示回合数
         this.eps = 1e-2; //允许的误差
 
@@ -41,7 +41,7 @@ export class Snake extends AcGameObject {
         ];
     }
 
-    start() {
+    start()  {
 
     }
 
@@ -51,7 +51,8 @@ export class Snake extends AcGameObject {
 
     check_tail_increasing() { //检测当前回合，蛇的长度是否增加
         if (this.step <= 10) return true;
-        return this.step % 3 === 1
+        if (this.step % 3 === 1) return true;
+        return false;
     }
 
     next_step() { //将蛇的状态改为走下一步
@@ -60,30 +61,30 @@ export class Snake extends AcGameObject {
         this.eyd_direction = d;
         this.direction = -1; //清空操作
         this.status = "move";
-        this.step++;
+        this.steps ++;
 
         const k = this.cells.length;
-        for (let i = k; i > 0; i--) {
+        for (let i = k; i > 0; i --) {
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i - 1]));
         }
 
     }
 
-    update_move() {
+    update_move() { 
         const dx = this.next_cell.x - this.cells[0].x;
         const dy = this.next_cell.y - this.cells[0].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
-        if (distance < this.eps) {
+        if (distance < this.eps ) {
             this.cells[0] = this.next_cell;
             this.next_cell = null;
             this.status = "idle"; //走到目标点了
-
-            if (!this.check_tail_increasing()) { //蛇不变长，弹出蛇尾
+            
+            if (!this.check_tail_increasing()) { //蛇不变长，弹出第一格
                 this.cells.pop();
             }
-        } else {
+        }else {
             const move_distance = this.speed * this.timedelta / 1000; //每两帧之间走的距离
             this.cells[0].x += move_distance * dx / distance;
             this.cells[0].y += move_distance * dy / distance;
@@ -97,13 +98,13 @@ export class Snake extends AcGameObject {
                 tail.y += move_distance * tail_dy / distance;
             }
         }
-
+     
     }
 
     update() { //每一帧执行一次
         if (this.status === 'move') {
             this.update_move();
-        }
+        }  
         this.render();
     }
 
@@ -113,7 +114,7 @@ export class Snake extends AcGameObject {
 
         ctx.fillStyle = this.color;
 
-        if (this.status === "die") {
+        if(this.status === "die") {
             ctx.fillStyle = "white";
         }
         //js中： of遍历值，in遍历下标
@@ -124,7 +125,7 @@ export class Snake extends AcGameObject {
             ctx.fill();
         }
 
-        for (let i = 1; i < this.cells.length; i++) {
+        for (let i = 1; i < this.cells.length; i ++) {
             const a = this.cells[i - 1], b = this.cells[i];
             if (Math.abs(a.x - b.x) < this.eps && Math.abs(a.y - b.y) < this.eps) {
                 continue;
@@ -132,13 +133,13 @@ export class Snake extends AcGameObject {
 
             if (Math.abs(a.x - b.x) < this.eps) {
                 ctx.fillRect((a.x - 0.4) * L, Math.min(a.y, b.y) * L, L * 0.8, Math.abs(a.y - b.y) * L);
-            } else {
+            }else {
                 ctx.fillRect(Math.min(a.x, b.x) * L, (a.y - 0.4) * L, Math.abs(a.x - b.x) * L, L * 0.8);
             }
         }
 
         ctx.fillStyle = "black";
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 2 ; i ++ ) {
             const eye_x = (this.cells[0].x + this.eye_dx[this.eye_direction][i] * 0.15) * L;
             const eye_y = (this.cells[0].y + this.eye_dy[this.eye_direction][i] * 0.15) * L;
 
@@ -147,6 +148,6 @@ export class Snake extends AcGameObject {
             ctx.arc(eye_x, eye_y, L * 0.05, 0, Math.PI * 2);
             ctx.fill();
         }
-
+ 
     }
 }

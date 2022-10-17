@@ -1,39 +1,28 @@
 <template>
-  <PlayGround v-if="$store.state.pk.status === 'playing'" />
-  <MatchGround v-if="$store.state.pk.status === 'matching'" />
-  <ResultBoard v-if="$store.state.pk.loser != 'none'" />
-  <div
-    class="user-color"
-    v-if="
-      $store.state.pk.status === 'playing' &&
-      parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)
-    "
-  >
-    左下角
-  </div>
-  <div
-    class="user-color"
-    v-if="
-      $store.state.pk.status == 'playing' &&
-      parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)
-    "
-  >
-    右上角
-  </div>
+<ContentField>
+    <PlayGround v-if="$store.state.pk.status === 'playing'"/>
+    <MatchGround v-if="$store.state.pk.status === 'matching'" />
+    <ResultBoard v-if="$store.state.pk.loser != 'none'" />
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">左下角</div>
+    <div class="user-color" v-if="$store.state.pk.status == 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">右上角</div>
+</ContentField>
 </template>
 
 <script>
-import PlayGround from "@/components/PlayGround.vue";
-import MatchGround from "@/components/MatchGround.vue";
-import ResultBoard from "@/components/ResultBoard.vue";
-import { onMounted, onUnmounted } from "vue";
-import { useStore } from "vuex";
+import ContentField from '@/components/ContentField.vue'
+import PlayGround from '@/components/PlayGround.vue'
+import MatchGround from '@/components/MatchGround.vue'
+import ResultBoard from '@/components/ResultBoard.vue'
+import { onMounted, onUnmounted} from 'vue'
+import { useStore } from 'vuex'
+
 
 export default {
   components: {
     PlayGround,
     MatchGround,
     ResultBoard,
+    ContentField,
   },
   setup() {
     const store = useStore();
@@ -46,14 +35,13 @@ export default {
     onMounted(() => {
       store.commit("updateOpponent", {
         username: "我的对手",
-        photo:
-          "https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png",
-      });
+        photo: "https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png",
+      })
       socket = new WebSocket(socketUrl);
       socket.onopen = () => {
         console.log("connected");
         store.commit("updateSocket", socket);
-      };
+      }
 
       socket.onmessage = (msg) => {
         const data = JSON.parse(msg.data);
@@ -67,14 +55,13 @@ export default {
           }, 200);
           console.log(data.game);
           store.commit("updateGame", data.game);
-        } else if (data.event === "move") {
+        }else if (data.event === "move") {
           console.log(data);
           const game = store.state.pk.gameObject;
           const [snake0, snake1] = game.snakes;
           snake0.set_direction(data.a_direction);
           snake1.set_direction(data.b_direction);
-          console.log(snake0.cells);
-        } else if (data.event === "result") {
+        }else if (data.event === "result") {
           console.log(data);
 
           const game = store.state.pk.gameObject;
@@ -90,20 +77,22 @@ export default {
           store.commit("updateLoser", data.loser);
           store.commit("updateRecordLoser", data.loser);
         }
-      };
+      }
 
       socket.onclose = () => {
         console.log("disconnected");
         store.commit("updateStatus", "matching");
-      };
+      }
 
-      socket.onerror = () => {};
+      socket.onerror = () => {
+
+      }
     });
 
     onUnmounted(() => {
       socket.close();
-    });
-  },
+    })
+  }
 };
 </script>
 
