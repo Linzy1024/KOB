@@ -22,10 +22,10 @@ export default ({
             state.token = token;
         },
         logout(state) {
-            state.id="",
-            state.photo="",
-            state.token="",
-            state.is_login=false;
+            state.id = "",
+                state.photo = "",
+                state.token = "",
+                state.is_login = false;
         },
         updatePullingInfo(state, pulling_info) {
             state.pulling_info = pulling_info;
@@ -33,30 +33,32 @@ export default ({
     },
     actions: {
         login(context, data) {
-            $.ajax ({
+            $.ajax({
                 url: "https://app3497.acapp.acwing.com.cn/api/user/account/token",
+                // url: "http://localhost:8081/api/user/account/token",
                 type: "post",
                 data: {
-                  username: data.username,
-                  password: data.password,
+                    username: data.username,
+                    password: data.password,
                 },
                 success(resp) {
                     console.log(resp.token);
                     if (resp.error_message === "success") {
                         context.commit("updateToken", resp.token);
                         data.success(resp);
-                    }else {
+                    } else {
                         data.error(resp);
                     }
                 },
-                error (resp) {
+                error(resp) {
                     data.error(resp);
                 },
-              });
+            });
         },
         getinfo(context, data) {
             $.ajax({
                 url: "https://app3497.acapp.acwing.com.cn/api/user/account/info",
+                // url: "http://localhost:8081/api/user/account/info",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + context.state.token,
@@ -67,17 +69,17 @@ export default ({
                         context.commit("updateUser", {
                             ...resp,
                             is_login: true,
-                          });
-                          data.success(resp);
-                    }else {
+                        });
+                        data.success(resp);
+                    } else {
                         data.error(resp);
                     }
                 },
 
                 error(resp) {
-                  data.error(resp);
+                    data.error(resp);
                 }
-              });
+            });
         },
         logout(context) {
             localStorage.removeItem("jwt_token");
@@ -87,4 +89,4 @@ export default ({
     modules: {
 
     }
-  })
+})

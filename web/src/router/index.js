@@ -83,7 +83,7 @@ const routes = [
   },
 
   {
-    Path: "/:catchAll(.*)",
+    path: "/:catchAll(.*)",
     redirect: "/404",
   }
 ]
@@ -95,8 +95,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requestAuth && !store.state.user.is_login) {
-    next({name: "user_account_login"});
-  }else {
+    next({ name: "user_account_login" });
+  } else {
     next();
   }
 })
